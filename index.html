@@ -9,14 +9,72 @@
 				var c = document.getElementById("myCanvas");
 				var ctx = c.getContext("2d");
 				var colourGreen = 'green';
-				var colourBlue = 'blue'
+				var x = canvas.width/2;
+				var y = canvas.height-30;
+				var dx = 2;
+				var dy = -2;
+				var paddleHeight = 300;
+				var paddleWidth = 550;
+				var paddleX = (canvas.width-paddleWidth)/2;
+				var rightPressed = false;
+				var leftPressed = false;
 				ctx.beginPath();
+				
+				document.addEventListener("keydown", keyDownHandler, false);
+				document.addEventListener("keyup", keyUpHandler, false);
+			
+				function keyDownHandler(e) {
+					if(e.code  == "ArrowRight") {
+						rightPressed = true;
+					}
+					else if(e.code == 'ArrowLeft') {
+						leftPressed = true;
+					}
+				}
+				function keyUpHandler(e) {
+					if(e.code  == "ArrowRight") {
+						rightPressed = false;
+					}
+					else if(e.code == 'ArrowLeft') {
+						leftPressed = false;
+					}
+				}
+				
+				    function drawPaddle() {
+					ctx.beginPath();
+					ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+					
+				<!--	ctx.rect(300,550,200,50)
+					ctx.fillStyle =  colourGreen;
+				<!--	ctx.fill();
+				<!--	ctx.stroke();	
+					ctx.fill();
+					ctx.closePath();
+				}
+				
+				 function draw() {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					
+					drawPaddle();
+
+					if(rightPressed && paddleX < canvas.width-paddleWidth) {
+						paddleX += 7;
+					}
+					else if(leftPressed && paddleX > 0) {
+						paddleX -= 7;
+					}
+
+					x += dx;
+					y += dy;
+				}
+
+				setInterval(draw, 10);
 			
 				<!--Proszę przygotować prostą grę, w której (u dołu ekranu) sterujemy(prawo-lewo) prostokątem. Po naciśnięciu spacji strzelamy małymi kulkami, które niszczą (znikają) duże kółka pojawiające się u góry ekranu. Ciągle mają się pojawiać nowe kółka
-				ctx.rect(300,550,200,50)
-				ctx.fillStyle =  colourGreen;
-				ctx.fill();
-				ctx.stroke();	
+				
+				
+				
+				
 			</script>
 		</canvas>
 	</body>
