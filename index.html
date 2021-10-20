@@ -40,6 +40,7 @@
 
 				function drawGame() {
 					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					hitOrMiss();
 					if (moveRight && paddle.x < canvas.width - paddle.paddleLength) {
 						paddle.x += 3;
 					} else if (moveLeft && paddle.x > 0) {
@@ -52,7 +53,7 @@
 							bullet = null;
 						}
 					}
-					hitOrMiss();
+					
 					draw();
 				}
 
@@ -119,14 +120,20 @@
 
 				function hitOrMiss() {
 					if (bullet) {
-						targets.find((target) => {
+						var hit = targets.find((target) => {
 							if (target.visible) {
 								var bulletRoute = parseInt(Math.sqrt(((target.x - bullet.x) * (target.x - bullet.x)) + ((target.y - bullet.y) * (target.y - bullet.y)))) < target.radius + bullet.radius;
 							}
 							return bulletRoute;
 						});
 					}
+					if (hit) {
+						targets[targets.indexOf(hit)].visible = false;
+						bullet = null;
+					}
 				}
+				
+				
 			</script>
 	</body>
 </html>
