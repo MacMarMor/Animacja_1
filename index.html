@@ -13,6 +13,7 @@
 				var	moveRight = false;
 				var	shootTarget = false;
 				var	bullet = null;
+				var cicleCounter = 0;
 				const leftPressed = 'ArrowLeft';
 				const rightPressed = 'ArrowRight';
 				const shootPressed = ' ';
@@ -31,6 +32,7 @@
 				document.onkeyup = (event) => { setDirection(event, false) };
 				setInterval(drawGame, 10);
 				setInterval(shoot, 5);
+				
 
 				function draw() {
 					drawPaddle();
@@ -41,6 +43,7 @@
 				function drawGame() {
 					ctx.clearRect(0, 0, canvas.width, canvas.height);
 					hitOrMiss();
+					checkCircle();
 					if (moveRight && paddle.x < canvas.width - paddle.paddleLength) {
 						paddle.x += 3;
 					} else if (moveLeft && paddle.x > 0) {
@@ -130,10 +133,16 @@
 					if (hit) {
 						targets[targets.indexOf(hit)].visible = false;
 						bullet = null;
+						cicleCounter++;
 					}
 				}
 				
-				
+				function checkCircle() {
+					if (targets.length === cicleCounter) {
+						targets.forEach(target => target.visible = true);
+						cicleCounter = 0;
+					}
+				}
 			</script>
 	</body>
 </html>
