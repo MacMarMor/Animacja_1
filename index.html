@@ -5,68 +5,99 @@
 	</head>
 	<body>
 		<canvas id="myCanvas" width="800" height="600" style="border:1px solid #000000;" ></canvas>
-		
 		<!--Proszę przygotować prostą grę, w której (u dołu ekranu) sterujemy(prawo-lewo) prostokątem. Po naciśnięciu spacji strzelamy małymi kulkami, które niszczą (znikają) duże kółka pojawiające się u góry ekranu. Ciągle mają się pojawiać nowe kółka -->
-
 			<script>
-				var canvas = document.getElementById("myCanvas");
-				var ctx = canvas.getContext("2d");
-				var x = canvas.width/2;
-				var y = canvas.height-30;
-				var dx = 2;
-				var dy = -2;
-				var paddleHeight = 50;
-				var paddleWidth = 200;
-				var paddleX = (canvas.width-paddleWidth)/2;
-				var rightPressed = false;
-				var leftPressed = false;
-
-				document.addEventListener("keydown", keyDownHandler, false);
-				document.addEventListener("keyup", keyUpHandler, false);
-
-				function keyDownHandler(e) {
-					if(e.code  == "ArrowRight") {
-						rightPressed = true;
+				var	canvas = document.getElementById("myCanvas");
+				var	ctx = canvas.getContext("2d");
+				var moveLeft = false;
+				var	moveRight = false;
+				var	shootTarget = false;
+				var	bullet = null;
+				const leftPressed = 'ArrowLeft';
+				const rightPressed = 'ArrowRight';
+				const shootPressed = ' ';
+				const targets = [];
+				const paddle = {
+						x: canvas.width / 2,
+						y: canvas.height - 30,
+						paddleLength: 150,
+						paddleHeight: 50,
+						speed: 7
 					}
-					else if(e.code == 'ArrowLeft') {
-						leftPressed = true;
+
+				document.onkeydown = (event) => { setDirection(event, true) };
+				document.onkeyup = (event) => { setDirection(event, false) };
+				setInterval(drawGame, 10);
+				setInterval(shoot, 5);
+
+				function draw() {
+					drawPaddle();
+					drawBullet();
+				}
+
+				function setDirection(event, down) {
+					if (event.key === leftPressed && moveLeft !== down) {
+						moveLeft = down;
+					} else if (event.key === rightPressed && moveRight !== down) {
+						moveRight = down;
+					} else if (event.key === shootPressed && shootTarget !== down) {
+						shootTarget = down;
 					}
 				}
-				function keyUpHandler(e) {
-					if(e.code  == "ArrowRight") {
-						rightPressed = false;
+
+				function drawGame() {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					if (moveRight && paddle.x < canvas.width - paddle.paddleLength) {
+						paddle.x += 3;
+					} else if (moveLeft && paddle.x > 0) {
+						paddle.x -= 3;
 					}
-					else if(e.code == 'ArrowLeft') {
-						leftPressed = false;
+					if (bullet) {
+						if (bullet.y > 0) {
+							bullet.y -= 15;
+						} else {
+							bullet = null;
+						}
 					}
+					hitOrMiss();
+					draw();
 				}
 
 				function drawPaddle() {
-					ctx.beginPath();
-					ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-					ctx.fillStyle = "green";
-					ctx.fill();
+					ctx.fillStyle = 'darkgreen';
+					ctx.fillRect(paddle.x, paddle.y, paddle.paddleLength, paddle.paddleHeight);
 					ctx.closePath();
 				}
 
-				function draw() {
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-					drawPaddle();
-
-
-					if(rightPressed && paddleX < canvas.width-paddleWidth) {
-						paddleX += 7;
+				function shoot() {
+					if (shootTarget && !bullet) {
+						bullet = {
+							x: paddle.x + paddle.paddleLength / 2,
+							y: paddle.y,
+							radius: 20
+						};
 					}
-					else if(leftPressed && paddleX > 0) {
-						paddleX -= 7;
-					}
-
-					x += dx;
-					y += dy;
 				}
 
-				setInterval(draw, 10);
-			
+				function drawBullet() {
+					if (bullet) {
+						ctx.beginPath();
+						ctx.fillStyle = 'lightgreen';
+						ctx.arc(bullet.x, bullet.y, bullet.radius, Math.PI * 2, false);
+						ctx.fill();
+					}
+				}
+
+				function hitOrMiss() {
+					if (bullet) {
+						targets.find((target) => {
+							if (target.visible) {
+								var bulletRoute = parseInt(Math.sqrt(((target.x - bullet.x) * (target.x - bullet.x)) + ((target.y - bullet.y) * (target.y - bullet.y)))) < target.radius + bullet.radius;
+							}
+							return bulletRoute;
+						});
+					}
+				}
 			</script>
 	</body>
 </html>
