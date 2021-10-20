@@ -25,6 +25,8 @@
 						speed: 7
 					}
 
+				generateCircle();
+				drawCircle();
 				document.onkeydown = (event) => { setDirection(event, true) };
 				document.onkeyup = (event) => { setDirection(event, false) };
 				setInterval(drawGame, 10);
@@ -33,16 +35,7 @@
 				function draw() {
 					drawPaddle();
 					drawBullet();
-				}
-
-				function setDirection(event, down) {
-					if (event.key === leftPressed && moveLeft !== down) {
-						moveLeft = down;
-					} else if (event.key === rightPressed && moveRight !== down) {
-						moveRight = down;
-					} else if (event.key === shootPressed && shootTarget !== down) {
-						shootTarget = down;
-					}
+					drawCircle();
 				}
 
 				function drawGame() {
@@ -68,6 +61,38 @@
 					ctx.fillRect(paddle.x, paddle.y, paddle.paddleLength, paddle.paddleHeight);
 					ctx.closePath();
 				}
+				
+				function drawCircle() {
+					ctx.beginPath();
+					targets.forEach((target) => {
+						if (target.visible) {
+							ctx.fillStyle = 'black';
+							ctx.moveTo(target.x, target.y);
+							ctx.arc(target.x, target.y, target.radius, 0, 2 * Math.PI);
+						}
+					});
+					ctx.fill();
+					ctx.closePath();
+				}
+				
+				function drawBullet() {
+					if (bullet) {
+						ctx.beginPath();
+						ctx.fillStyle = 'lightgreen';
+						ctx.arc(bullet.x, bullet.y, bullet.radius, Math.PI * 2, false);
+						ctx.fill();
+					}
+				}
+				
+				function setDirection(event, down) {
+					if (event.key === leftPressed && moveLeft !== down) {
+						moveLeft = down;
+					} else if (event.key === rightPressed && moveRight !== down) {
+						moveRight = down;
+					} else if (event.key === shootPressed && shootTarget !== down) {
+						shootTarget = down;
+					}
+				}
 
 				function shoot() {
 					if (shootTarget && !bullet) {
@@ -79,12 +104,16 @@
 					}
 				}
 
-				function drawBullet() {
-					if (bullet) {
-						ctx.beginPath();
-						ctx.fillStyle = 'lightgreen';
-						ctx.arc(bullet.x, bullet.y, bullet.radius, Math.PI * 2, false);
-						ctx.fill();
+				function generateCircle() {
+					for (var i = 1; i < 5; i++) {
+						for (var j = 1; j < 11; j++) {
+							targets.push({
+								x: j * 70 ,
+								y: i * 50,
+								radius: 20,
+								visible: true
+							});
+						}
 					}
 				}
 
