@@ -26,6 +26,7 @@
 						paddleHeight: 50,
 						speed: 7
 					}
+				const newCircle = 30000;
 
 				generateCircle();
 				drawCircle();
@@ -137,6 +138,10 @@
 						pointCounter++;
 						cicleCounter++;
 						bullet = null;
+						setTimeout(() => {
+							targets[targets.indexOf(hit)].visible = true;
+							cicleCounter--;
+						}, newCircle);
 					}
 				}
 				
